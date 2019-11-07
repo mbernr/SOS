@@ -29,7 +29,7 @@ def parse_tsp(file_path):
 
 		G = add_dummy_edges(G)
 
-		return G,G.number_of_nodes(),G.number_of_edges(),k,L
+		return G
 
 	elif first_line == "COORDS":
 
@@ -54,7 +54,7 @@ def parse_tsp(file_path):
 				distance = custom_round(euclidean_distance(xi,yi,xj,yj))
 				G.add_edge(i, j, weight=distance)
 
-		return G,G.number_of_nodes(),G.number_of_edges(),k,L
+		return G
 
 	else:
 

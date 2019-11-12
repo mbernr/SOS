@@ -1,8 +1,7 @@
-from utils import path_length, parse_tsp
-
 import random
 import numpy as np
 from deap import algorithms, base, creator, tools
+from utils import path_length, parse_tsp
 
 
 # Parsing TSP instance.

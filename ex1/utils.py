@@ -1,7 +1,7 @@
 import sys
 import math
+import tsplib95
 import networkx as nx
-
 
 ### GENERAL GRAPH HELPERS ###
 
@@ -11,59 +11,6 @@ def path_length(G, path):
 		weight = G.get_edge_data(path[i], path[i+1])['weight']
 		path_length += weight
 	return path_length
-
-
-### TSP PARSING ###
-
-def parse_tsp(file_path):
-	file = open(file_path, "r")
-	first_line = file.readline().strip()
-	if first_line == "EDGELIST":
-		second_line = file.readline().strip().split(" ")
-		n = int(second_line[0]) # number of vertices
-		m = int(second_line[1]) # number of edges
-		k = int(second_line[2]) # number of drivers
-		L = int(second_line[3]) # desired travel distance
-		G = nx.Graph()
-		for i in range(n):
-			G.add_node(i)
-		for i in range(m):
-			line = file.readline().strip().split(" ")
-			G.add_edge(int(line[0]), int(line[1]), weight=int(line[2]))
-		G = add_dummy_edges(G)
-		return G
-	elif first_line == "COORDS":
-		second_line = file.readline().strip().split(" ")
-		n = int(second_line[0]) # number of vertices
-		k = int(second_line[1]) # number of drivers
-		L = int(second_line[2]) # desired travel distance
-		G = nx.Graph()
-		for i in range(n):
-			line = file.readline().strip().split(" ")
-			G.add_node(i, x=int(line[0]), y=int(line[1]))
-		for i in range(n):
-			xi = G.nodes[i]["x"]
-			yi = G.nodes[i]["y"]
-			for j in range(i+1, n):
-				xj = G.nodes[j]["x"]
-				yj = G.nodes[j]["y"]
-				distance = custom_round(euclidean_distance(xi,yi,xj,yj))
-				G.add_edge(i, j, weight=distance)
-		return G
-	else:
-		print("Invalid instance format")
-		sys.exit()
-
-def add_dummy_edges(G):
-	M = big_M(G)
-	for i in range(G.number_of_nodes()):
-		for j in range(i+1, G.number_of_nodes()):
-			if not G.has_edge(i,j):
-				G.add_edge(i, j, weight=M)
-	return G
-
-def big_M(G):
-	return edge_weight_sum(G) + 1 
 
 def max_edge_weight(G):
 	max_weight = 0
@@ -80,12 +27,26 @@ def edge_weight_sum(G):
 		weight_sum += weight
 	return weight_sum
 
-def euclidean_distance(x1,y1,x2,y2):
-	return math.sqrt((x1-x2)**2 + (y1-y2)**2)
 
-def custom_round(x):
-	frac = x - math.floor(x)
-	if frac < 0.5: 
-		return math.floor(x)
-	else:
-		return math.ceil(x)
+### TSP HELPERS ###
+
+# Take instances from here: http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsp/index.html
+
+def parse_tsp(file_path):
+	problem = tsplib95.load_problem(file_path)
+	G = problem.get_graph()
+	G = nx.convert_node_labels_to_integers(G) # otherwise there are problems with the genetic algorithm
+	return G
+
+def parse_tsp_optimal_solution(file_path):
+	solution = tsplib95.load_solution(file_path)
+	tour = [x - 1 for x in solution.tours[0]] # relabel the vertices to range from 0 to n-1, instead of from 1 to n.
+	return tour
+
+def tour_length(G, tour):
+	path = tour + [tour[0]]
+	return path_length(G, path)
+
+def start_tour_from_zero(tour):
+	i = tour.index(0)
+	return tour[i:] + tour[:i]

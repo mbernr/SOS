@@ -1,20 +1,19 @@
 import random
 import numpy as np
 from deap import algorithms, base, creator, tools
-from utils import path_length, parse_tsp
+from utils import *
 
 
 # Parsing TSP instance.
-edgelist = "tsp_instances/0010_k1.txt"
-coords = "tsp_instances/kroB150_k3_2.txt"
-G = parse_tsp(edgelist)
+G = parse_tsp("instances/tsp/bays29.tsp")
+optimal_tour = parse_tsp_optimal_solution("instances/tsp/bays29.opt.tour")
 
 # The evaluation function is the only part that needs to be provided.
 # Everything else can be handled by DEAP. 
 # This function must return a tuple, since single-solution problems 
 # are just a special case of multi-solution problems.
 def evaluate(individual):
-    return path_length(G, individual), 
+	return tour_length(G, individual),
 
 
 # Size of every individual in the population.
@@ -56,5 +55,16 @@ stats.register("max", np.max)
 algorithms.eaSimple(pop, toolbox, 0.7, 0.2, 40, stats=stats, 
                     halloffame=best_solutions)
 
-# Print the best solution.
-print(best_solutions[0], evaluate(best_solutions[0]))
+# Format the best solution to always start from vertex 0
+best_solution = start_tour_from_zero(best_solutions[0])
+
+# Print the best solution we found.
+print()
+print("Found: {}".format(evaluate(best_solution)[0]))
+print(best_solution)
+
+# Print the optimal solution.
+print()
+print("Optimal: {}".format(evaluate(optimal_tour)[0]))
+print(optimal_tour)
+

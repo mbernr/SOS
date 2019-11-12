@@ -12,6 +12,14 @@ def path_length(G, path):
 		path_length += weight
 	return path_length
 
+def tour_length(G, tour):
+	path = tour + [tour[0]]
+	return path_length(G, path)
+
+def start_tour_from_zero(tour):
+	i = tour.index(0)
+	return tour[i:] + tour[:i]
+
 def max_edge_weight(G):
 	max_weight = 0
 	for edge in G.edges.data('weight'):
@@ -27,6 +35,17 @@ def edge_weight_sum(G):
 		weight_sum += weight
 	return weight_sum
 
+def add_dummy_edges(G):
+	M = big_M(G)
+	for i in range(G.number_of_nodes()):
+		for j in range(G.number_of_nodes()):
+			if i != j and not G.has_edge(i,j):
+				G.add_edge(i, j, weight=M)
+	return G
+
+def big_M(G):
+	return edge_weight_sum(G) + 1 
+
 
 ### TSP HELPERS ###
 
@@ -36,17 +55,11 @@ def parse_tsp(file_path):
 	problem = tsplib95.load_problem(file_path)
 	G = problem.get_graph()
 	G = nx.convert_node_labels_to_integers(G) # otherwise there are problems with the genetic algorithm
+	if not problem.is_complete():
+		G = add_dummy_edges(G)
 	return G
 
 def parse_tsp_optimal_solution(file_path):
 	solution = tsplib95.load_solution(file_path)
 	tour = [x - 1 for x in solution.tours[0]] # relabel the vertices to range from 0 to n-1, instead of from 1 to n.
 	return tour
-
-def tour_length(G, tour):
-	path = tour + [tour[0]]
-	return path_length(G, path)
-
-def start_tour_from_zero(tour):
-	i = tour.index(0)
-	return tour[i:] + tour[:i]

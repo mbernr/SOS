@@ -1,5 +1,4 @@
-from tsp_parser import parse_tsp
-from utils import path_length
+from utils import path_length, parse_tsp
 
 import random
 import numpy as np

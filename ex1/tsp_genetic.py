@@ -5,8 +5,8 @@ from utils import *
 
 
 # Parsing TSP instance.
-G = parse_tsp("instances/tsp/bays29.tsp")
-optimal_tour = parse_tsp_optimal_solution("instances/tsp/bays29.opt.tour")
+G = parse_tsp("instances/tsp/pr76.tsp")
+optimal_tour = parse_tsp_optimal_solution("instances/tsp/pr76.opt.tour")
 
 # The evaluation function is the only part that needs to be provided.
 # Everything else can be handled by DEAP. 

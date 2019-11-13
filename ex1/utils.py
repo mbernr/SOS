@@ -67,6 +67,36 @@ def parse_tsp_optimal_solution(file_path):
 	return tour
 
 
+### KNAPSACK HELPERS ###
+
+class KnapsackInstance:
+	def __init__(self, capacity, number_items, weights_items, value_items):
+		self.capacity = capacity			# (int)            maximum load of the knapsack
+		self.number_items = number_items	# (int)            number of candidate items
+		self.weights_items = weights_items	# (array of int)   weights of the items (weights_items[i]=weight of item i)
+		self.value_items = value_items		# (array of int)   value of the items (value_items[i]=value of item i)
+
+# return KnapsackInstance object defined above
+def parse_knapsack(file_path):
+	with open(file_path, 'r') as file:
+		number_items, capacity = (int(el) for el in file.readline().split())
+		weights = []
+		values = []
+		for i in range(0,number_items):
+			value, weight = (int(el) for el in file.readline().split())
+			weights = [weights, weight]
+			values = [values, value]
+
+		return KnapsackInstance(capacity, number_items, weights, values)
+
+# return optimal knapsack value (int)
+def parse_knapsack_optimal_solution(file_path):
+	with open(file_path, 'r') as file:
+		return int(file.readline())
+
+	
+
+
 
 
 

@@ -2,6 +2,8 @@ import sys
 import math
 import tsplib95
 import networkx as nx
+import numpy as np
+import acopy
 
 ### GENERAL GRAPH HELPERS ###
 
@@ -63,3 +65,31 @@ def parse_tsp_optimal_solution(file_path):
 	solution = tsplib95.load_solution(file_path)
 	tour = [x - 1 for x in solution.tours[0]] # relabel the vertices to range from 0 to n-1, instead of from 1 to n.
 	return tour
+
+
+
+
+
+### ACOPY plugin for displaying stats at each iteration
+
+class StatsIterations(acopy.solvers.SolverPlugin):
+
+	def __init__(self, evalFunction):
+		super().__init__(evalFunction=evalFunction)
+		self.evalFunction = evalFunction
+		self.colwidth = 15
+		print("{:<5} {:<15} {:<15} {:<15} {:<15} {:<15}".format("iter", "best", "avg", "std", "min", "max"))
+		self.counter = 0
+
+	def on_iteration(self, state):
+		self.counter += 1
+		evals = [self.evalFunction(solution) for solution in state.solutions]
+
+		print("{:<5} {:<15} {:<15.2f} {:<15.2f} {:<15} {:<15}".format(
+			self.counter, 
+			state.record.cost,
+			np.mean(evals), 
+			np.std(evals),
+			np.min(evals),
+			np.max(evals))
+		)

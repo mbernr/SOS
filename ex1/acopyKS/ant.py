@@ -43,91 +43,39 @@ class Ant:
     def __repr__(self):
         return f'Ant(alpha={self.alpha}, beta={self.beta})'
 
-    def tour(self, graph):
-        """Find a solution to the given graph.
+    def tour(self, instance):
+        """Find a solution to the given instance.
 
-        :param graph: the graph to solve
-        :type graph: :class:`networkx.Graph`
+        :param instance: the instance to solve
+        :type instance: :class:`utils.KnapsackInstance`
         :return: one solution
         :rtype: :class:`~acopy.solvers.Solution`
         """
-        solution = self.initialize_solution(graph)
-        unvisited = self.get_unvisited_nodes(graph, solution)
-        while unvisited:
-            node = self.choose_destination(graph, solution.current, unvisited)
-            solution.add_node(node)
-            unvisited.remove(node)
-        solution.close()
+        solution = self.initialize_solution(instance)
+        items_to_pick = solution.items_to_pick
+        while items_to_pick and solution.weight < instance.capacity :
+            item = self.choose_item(instance, items_to_pick)
+            solution.add_item(item)
+            items_to_pick = solution.items_to_pick
         return solution
 
-    def initialize_solution(self, graph):
-        """Return a newly initialized solution for the given graph.
+    def initialize_solution(self, instance):
+        return Solution(instance, ant=self)
 
-        :param graph: the graph to solve
-        :type graph: :class:`networkx.Graph`
-        :return: intialized solution
-        :rtype: :class:`~acopy.solvers.Solution`
-        """
-        start = self.get_starting_node(graph)
-        return Solution(graph, start, ant=self)
+    def choose_item(self, instance, candidates):
+        if len(candidates) == 1:
+            return candidates[0]
+        scores = self.get_scores(instance, candidates)
+        return self.choose(candidates, scores)
 
-    def get_starting_node(self, graph):
-        """Return a starting node for an ant.
-
-        :param graph: the graph being solved
-        :type graph: :class:`networkx.Graph`
-        :return: node
-        """
-        return random.choice(list(graph.nodes))
-
-    def get_unvisited_nodes(self, graph, solution):
-        """Return the unvisited nodes.
-
-        :param graph: the graph being solved
-        :type graph: :class:`networkx.Graph`
-        :param solution: in progress solution
-        :type solution: :class:`~acopy.solvers.Solution`
-        :return: unvisited nodes
-        :rtype: list
-        """
-        nodes = []
-        for node in graph[solution.current]:
-            if node not in solution:
-                nodes.append(node)
-        return nodes
-
-    def choose_destination(self, graph, current, unvisited):
-        """Return the next node.
-
-        :param graph: the graph being solved
-        :type graph: :class:`networkx.Graph`
-        :param current: starting node
-        :param list unvisited: available nodes
-        :return: chosen edge
-        """
-        if len(unvisited) == 1:
-            return unvisited[0]
-        scores = self.get_scores(graph, current, unvisited)
-        return self.choose_node(unvisited, scores)
-
-    def get_scores(self, graph, current, destinations):
-        """Return scores for the given destinations.
-
-        :param graph: the graph being solved
-        :type graph: :class:`networkx.Graph`
-        :param current: the node from which to score the destinations
-        :param list destinations: available, unvisited nodes
-        :return: scores
-        :rtype: list
-        """
+    def get_scores(self, instance, candidates):
         scores = []
-        for node in destinations:
-            edge = graph.edges[current, node]
-            score = self.score_edge(edge)
+        for item in candidates:
+            score = self.score_item(instance, item)
             scores.append(score)
         return scores
 
-    def choose_node(self, choices, scores):
+    def choose(self, choices, scores):
         """Return one of the choices.
 
         Note that ``scores[i]`` corresponds to ``choices[i]``.
@@ -141,19 +89,19 @@ class Ant:
         index = bisect.bisect(cumdist, random.random() * total)
         return choices[min(index, len(choices) - 1)]
 
-    def score_edge(self, edge):
-        """Return the score for the given edge.
+    def score_item(self, instance, item):
+        """Return the score for the given item.
 
-        :param dict edge: the edge data
         :return: score
         :rtype: float
         """
-        weight = edge.get('weight', 1)
+        weight = instance.weights_items[item]
+        value = instance.values_items[item]
         if weight == 0:
             return sys.float_info.max
-        pre = 1 / weight
-        post = edge['pheromone']
-        return post ** self.alpha * pre ** self.beta
+        pre =  value / weight
+        post = instance.pheromones[item]
+        return (0.1+post) ** self.alpha * (0.1+pre) ** self.beta
 
 
 class Colony:

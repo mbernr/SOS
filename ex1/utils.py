@@ -70,11 +70,13 @@ def parse_tsp_optimal_solution(file_path):
 ### KNAPSACK HELPERS ###
 
 class KnapsackInstance:
-	def __init__(self, capacity, number_items, weights_items, value_items):
+	def __init__(self, capacity, number_items, weights_items, values_items):
 		self.capacity = capacity			# (int)            maximum load of the knapsack
 		self.number_items = number_items	# (int)            number of candidate items
 		self.weights_items = weights_items	# (array of int)   weights of the items (weights_items[i]=weight of item i)
-		self.value_items = value_items		# (array of int)   value of the items (value_items[i]=value of item i)
+		self.values_items = values_items	# (array of int)   value of the items (value_items[i]=value of item i)
+		self.pheromones = np.zeros(number_items, dtype=float)
+		self.ub = sum(values_items)			# upper bound on the knapsack value
 
 # return KnapsackInstance object defined above
 def parse_knapsack(file_path):
@@ -84,8 +86,8 @@ def parse_knapsack(file_path):
 		values = []
 		for i in range(0,number_items):
 			value, weight = (int(el) for el in file.readline().split())
-			weights = [weights, weight]
-			values = [values, value]
+			weights.append(weight)
+			values.append(value)
 
 		return KnapsackInstance(capacity, number_items, weights, values)
 
@@ -93,12 +95,6 @@ def parse_knapsack(file_path):
 def parse_knapsack_optimal_solution(file_path):
 	with open(file_path, 'r') as file:
 		return int(file.readline())
-
-	
-
-
-
-
 
 ### ACOPY plugin for displaying stats at each iteration
 
@@ -117,7 +113,7 @@ class StatsIterations(acopy.solvers.SolverPlugin):
 
 		print("{:<5} {:<15} {:<15.2f} {:<15.2f} {:<15} {:<15}".format(
 			self.counter, 
-			state.record.cost,
+			self.evalFunction(state.record),
 			np.mean(evals), 
 			np.std(evals),
 			np.min(evals),

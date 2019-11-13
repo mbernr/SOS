@@ -2,103 +2,80 @@
 import sys
 import functools
 import collections
+import numpy as np
 
 from . import utils
 
 
 @functools.total_ordering
 class Solution:
-    """Tour for a graph.
+    """Binary vector (items of the knapsack that are picked)
 
-    :param graph: a graph
-    :type graph: :class:`networkx.Graph`
-    :param start: starting node
+    :param instance: an instance
+    :type instance: :class:`utils.KnapsackInstance`
+    :param start: starting item (by default 0)
     :param ant: ant responsible
     :type ant: :class:`~acopy.ant.Ant`
     """
 
-    def __init__(self, graph, start, ant=None):
-        self.graph = graph
-        self.start = start
+    def __init__(self, instance, ant=None):
+        self.instance = instance
         self.ant = ant
-        self.current = start
-        self.cost = 0
-        self.path = []
-        self.nodes = [start]
-        self.visited = set(self.nodes)
+        self.value = 0
+        self.weight = 0
+        self.picked_items = np.zeros(instance.number_items, dtype=int)
+        self.items_to_pick = [i for i in range(0, instance.number_items)]
 
     def __iter__(self):
         return iter(self.path)
 
     def __eq__(self, other):
-        return self.cost == other.cost
+        return self.value == other.value
 
     def __lt__(self, other):
-        return self.cost < other.cost
+        return self.value < other.value
 
-    def __contains__(self, node):
-        return node in self.visited or node == self.current
+    def __gt__(self, other):
+        return self.value > other.value
+
+    def __contains__(self, item):
+        return self.picked_items[item]==1
 
     def __repr__(self):
         easy_id = self.get_easy_id(sep=',', monospace=False)
-        return '{}\t{}'.format(self.cost, easy_id)
+        return '{}\t{}'.format(self.value, easy_id)
 
     def __hash__(self):
         return hash(self.get_id())
 
+    def add_item(self, item):
+        """Record an item as picked or left
+
+        :param item: the item wich is getting picked / left
+        """
+        self.items_to_pick.remove(item)
+        self.picked_items[item]=1
+        self.value+=self.instance.values_items[item]
+        self.weight+=self.instance.weights_items[item]
+        self.items_to_pick = [item for item in self.items_to_pick if self.instance.weights_items[item] < (self.instance.capacity-self.weight)]
+
     def get_easy_id(self, sep=' ', monospace=True):
-        nodes = [str(n) for n in self.get_id()]
-        if monospace:
-            size = max([len(n) for n in nodes])
-            nodes = [n.rjust(size) for n in nodes]
-        return sep.join(nodes)
-
-    def get_id(self):
-        """Return the ID of the solution.
-
-        The default implementation is just each of the nodes in visited order.
-
-        :return: solution ID
-        :rtype: tuple
-        """
-        first = min(self.nodes)
-        index = self.nodes.index(first)
-        return tuple(self.nodes[index:] + self.nodes[:index])
-
-    def add_node(self, node):
-        """Reocrd a node as visited.
-
-        :param node: the node visited
-        """
-        self.nodes.append(node)
-        self.visited.add(node)
-        self._add_node(node)
-
-    def close(self):
-        """Close the tour so that the first and last nodes are the same."""
-        self._add_node(self.start)
-
-    def _add_node(self, node):
-        edge = self.current, node
-        data = self.graph.edges[edge]
-        self.path.append(edge)
-        self.cost += data['weight']
-        self.current = node
+        return str((self.value, self.weight))
 
     def trace(self, q, rho=0):
-        """Deposit pheromone on the edges.
+        """Deposit pheromone on the items.
 
         Note that by default no pheromone evaporates.
 
         :param float q: the amount of pheromone
         :param float rho: the percentage of pheromone to evaporate
         """
-        amount = q / self.cost
-        for edge in self.path:
-            self.graph.edges[edge]['pheromone'] += amount
-            self.graph.edges[edge]['pheromone'] *= 1 - rho
-            if not self.graph.edges[edge]['pheromone']:
-                self.graph.edges[edge]['pheromone'] = sys.float_info.min
+        amount = q * self.value
+        for item in range(0,self.instance.number_items):
+            self.instance.pheromone[item] += amount
+            self.instance.pheromone[item] *= 1 - rho
+            if self.instance.pheromone[item] < 0.0:
+                self.instance.pheromone[item] = 0.0
 
 
 class State:
@@ -110,7 +87,7 @@ class State:
     ===================== ======================================
     Attribute             Description
     ===================== ======================================
-    ``graph``             graph being solved
+    ``instance`           instance being solved
     ``colony``            colony that generated the ants
     ``ants``              ants being used to solve the graph
     ``limit``             maximum number of iterations
@@ -131,8 +108,8 @@ class State:
     :type colony: :class:`~acopy.ant.Colony`
     """
 
-    def __init__(self, graph, ants, limit, gen_size, colony):
-        self.graph = graph
+    def __init__(self, instance, ants, limit, gen_size, colony):
+        self.instance = instance
         self.ants = ants
         self.limit = limit
         self.gen_size = gen_size
@@ -149,7 +126,7 @@ class State:
 
     @best.setter
     def best(self, best):
-        self.is_new_record = self.record is None or best < self.record
+        self.is_new_record = self.record is None or best > self.record
         if self.is_new_record:
             self.previous_record = self.record
             self.record = best
@@ -194,11 +171,11 @@ class Solver:
             best = solution
         return best
 
-    def optimize(self, graph, colony, gen_size=None, limit=None):
+    def optimize(self, instance, colony, gen_size=None, limit=None):
         """Find and return increasingly better solutions.
 
-        :param graph: graph to solve
-        :type graph: :class:`networkx.Graph`
+        :param graph: instance to solve
+        :type graph: :class:`utils.KnapsackInstance`
         :param colony: colony from which to source each :class:`~acopy.ant.Ant`
         :type colony: :class:`~acopy.ant.Colony`
         :param int gen_size: number of :class:`~acopy.ant.Ant` s to use
@@ -211,10 +188,8 @@ class Solver:
         # initialize the colony of ants and the graph
         gen_size = gen_size or len(graph.nodes)
         ants = colony.get_ants(gen_size)
-        for u, v in graph.edges:
-            graph.edges[u, v].setdefault('pheromone', 0)
 
-        state = State(graph=graph, ants=ants, limit=limit, gen_size=gen_size,
+        state = State(instance=instance, ants=ants, limit=limit, gen_size=gen_size,
                       colony=colony)
 
         # call start hook for all plugins
@@ -222,13 +197,13 @@ class Solver:
 
         # find solutions and update the graph pheromone accordingly
         for __ in utils.looper(limit):
-            solutions = self.find_solutions(state.graph, state.ants)
+            solutions = self.find_solutions(state.instance, state.ants)
 
             # we want to ensure the ants are sorted with the solutions, but
             # since ants aren't directly comparable, so we interject a list of
             # unique numbers that satifies any two solutions that are equal
             data = list(zip(solutions, range(len(state.ants)), state.ants))
-            data.sort()
+            data.sort(reverse=True)
             solutions, __, ants = zip(*data)
 
             state.solutions = solutions
@@ -247,16 +222,16 @@ class Solver:
         # call finish hook for all plugins
         self._call_plugins('finish', state=state)
 
-    def find_solutions(self, graph, ants):
+    def find_solutions(self, instance, ants):
         """Return the solutions found for the given ants.
 
-        :param graph: a graph
-        :type graph: :class:`networkx.Graph`
+        :param instance: an instance
+        :type instance: :class:`utils.KnapsackInstance`
         :param list ants: the ants to use
         :return: one solution per ant
         :rtype: list
         """
-        return [ant.tour(graph) for ant in ants]
+        return [ant.tour(instance) for ant in ants]
 
     def global_update(self, state):
         """Perform a global pheromone update.
@@ -264,17 +239,17 @@ class Solver:
         :param state: solver state
         :type state: :class:`~State`
         """
-        for edge in state.graph.edges:
+        for item in range(0, state.instance.number_items):
             amount = 0
             if self.top:
                 solutions = state.solutions[:self.top]
             else:
                 solutions = state.solutions
             for solution in solutions:
-                if edge in solution.path:
-                    amount += self.q / solution.cost*solution.cost
-            p = state.graph.edges[edge]['pheromone']
-            state.graph.edges[edge]['pheromone'] = (1 - self.rho) * p + amount
+                if solution.picked_items[item]==1:
+                    amount += self.q * solution.value / solution.instance.ub
+            p = state.instance.pheromones[item]
+            state.instance.pheromones[item] = (1 - self.rho) * p + amount
 
     def add_plugin(self, plugin):
         """Add a single solver plugin.

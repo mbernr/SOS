@@ -1,16 +1,9 @@
 import random
 import numpy as np
+import time
 from deap import algorithms, base, creator, tools
 from utils import *
 
-
-# Parameters
-population_size = 1000
-num_generations = 1000
-prb_crossover = 0.75
-prb_mutation = 0.15
-prb_mutation_shuffle = 0.05
-tournament_size = 50
 
 # Parsing TSP instance.
 G = parse_tsp("instances/tsp/pr76.tsp")
@@ -32,53 +25,82 @@ ind_size = G.number_of_nodes()
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
-# Individuals are created as random permutations
-toolbox = base.Toolbox()
-toolbox.register("indices", random.sample, range(ind_size), ind_size)
-toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.indices)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-# Specify how individuals will be crossed over, mutated, and selected.
-toolbox.register("mate", tools.cxPartialyMatched)
-toolbox.register("mutate", tools.mutShuffleIndexes, indpb=prb_mutation_shuffle)
-toolbox.register("select", tools.selTournament, tournsize=tournament_size)
-toolbox.register("evaluate", evaluate)
+for i in range(100,1001,100):
 
-# Initialize population.
-#random.seed(169)
-population = toolbox.population(n=population_size)
+	# Parameters
+	population_size = i
+	num_generations = 1000
+	prb_crossover = 0.75
+	prb_mutation = 0.15
+	prb_mutation_shuffle = 0.05
+	tournament_size = 50
+	verbose = False
 
-# Keep the (single) best solution. 
-best_solutions = tools.HallOfFame(1)
+	# Individuals are created as random permutations
+	toolbox = base.Toolbox()
+	toolbox.register("indices", random.sample, range(ind_size), ind_size)
+	toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.indices)
+	toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-# Record statistics.
-stats = tools.Statistics(lambda ind: ind.fitness.values)
-stats.register("avg", np.mean)
-stats.register("std", np.std)
-stats.register("min", np.min)
-stats.register("max", np.max)
+	# Specify how individuals will be crossed over, mutated, and selected.
+	toolbox.register("mate", tools.cxPartialyMatched)
+	toolbox.register("mutate", tools.mutShuffleIndexes, indpb=prb_mutation_shuffle)
+	toolbox.register("select", tools.selTournament, tournsize=tournament_size)
+	toolbox.register("evaluate", evaluate)
 
-# Execute algorithm provided by DEAP.
-algorithms.eaSimple(
-	population, 
-	toolbox, 
-	prb_crossover, 
-	prb_mutation, 
-	num_generations, 
-	stats=stats, 
-	halloffame=best_solutions
-)
+	# Initialize population.
+	#random.seed(169)
+	population = toolbox.population(n=population_size)
 
-# Format the best solution to always start from vertex 0
-best_solution = start_tour_from_zero(best_solutions[0])
+	# Keep the (single) best solution. 
+	best_solutions = tools.HallOfFame(1)
 
-# Print the best solution we found.
-print()
-print("Found: {}".format(evaluate(best_solution)[0]))
-print(best_solution)
+	# Record statistics.
+	stats = tools.Statistics(lambda ind: ind.fitness.values)
+	stats.register("avg", np.mean)
+	stats.register("std", np.std)
+	stats.register("min", np.min)
+	stats.register("max", np.max)
 
-# Print the optimal solution.
-print()
-print("Optimal: {}".format(evaluate(optimal_tour)[0]))
-print(optimal_tour)
+	start_time = time.time()
+
+	# Execute algorithm provided by DEAP.
+	algorithms.eaSimple(
+		population, 
+		toolbox, 
+		prb_crossover, 
+		prb_mutation, 
+		num_generations, 
+		stats=stats, 
+		halloffame=best_solutions,
+		verbose=verbose
+	)
+
+	end_time = time.time()
+	run_time = round(end_time - start_time, 2)
+
+	# Format the best solution to always start from vertex 0
+	best_solution = start_tour_from_zero(best_solutions[0])
+
+	if verbose:
+		# Print the best solution we found.
+		print()
+		print("Found: {} ({}s)".format(evaluate(best_solution)[0], run_time))
+		print(best_solution)
+
+		# Print the optimal solution.
+		print()
+		print("Optimal: {}".format(evaluate(optimal_tour)[0]))
+		print(optimal_tour)
+	else:
+		print("{}\t{}\t{}\t{}\t{}\t{}".format(
+			population_size, 
+			prb_crossover, 
+			prb_mutation, 
+			evaluate(best_solution)[0],
+			evaluate(optimal_tour)[0],
+			run_time
+		))
+
 

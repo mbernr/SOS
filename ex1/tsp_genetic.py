@@ -4,6 +4,14 @@ from deap import algorithms, base, creator, tools
 from utils import *
 
 
+# Parameters
+population_size = 1000
+num_generations = 1000
+prb_crossover = 0.75
+prb_mutation = 0.15
+prb_mutation_shuffle = 0.05
+tournament_size = 50
+
 # Parsing TSP instance.
 G = parse_tsp("instances/tsp/pr76.tsp")
 optimal_tour = parse_tsp_optimal_solution("instances/tsp/pr76.opt.tour")
@@ -15,11 +23,10 @@ optimal_tour = parse_tsp_optimal_solution("instances/tsp/pr76.opt.tour")
 def evaluate(individual):
 	return tour_length(G, individual),
 
-
 # Size of every individual in the population.
 # Since every individual represents a hamiltonian cycle, 
 # every vertex in G must be part of the individual.
-IND_SIZE = G.number_of_nodes()
+ind_size = G.number_of_nodes()
 
 # We set the weights to (-1.0), since we have a minimization problem
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -27,19 +34,19 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 
 # Individuals are created as random permutations
 toolbox = base.Toolbox()
-toolbox.register("indices", random.sample, range(IND_SIZE), IND_SIZE)
+toolbox.register("indices", random.sample, range(ind_size), ind_size)
 toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.indices)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 # Specify how individuals will be crossed over, mutated, and selected.
 toolbox.register("mate", tools.cxPartialyMatched)
-toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
-toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("mutate", tools.mutShuffleIndexes, indpb=prb_mutation_shuffle)
+toolbox.register("select", tools.selTournament, tournsize=tournament_size)
 toolbox.register("evaluate", evaluate)
 
 # Initialize population.
-random.seed(169)
-pop = toolbox.population(n=300)
+#random.seed(169)
+population = toolbox.population(n=population_size)
 
 # Keep the (single) best solution. 
 best_solutions = tools.HallOfFame(1)
@@ -52,8 +59,15 @@ stats.register("min", np.min)
 stats.register("max", np.max)
 
 # Execute algorithm provided by DEAP.
-algorithms.eaSimple(pop, toolbox, 0.7, 0.2, 40, stats=stats, 
-                    halloffame=best_solutions)
+algorithms.eaSimple(
+	population, 
+	toolbox, 
+	prb_crossover, 
+	prb_mutation, 
+	num_generations, 
+	stats=stats, 
+	halloffame=best_solutions
+)
 
 # Format the best solution to always start from vertex 0
 best_solution = start_tour_from_zero(best_solutions[0])

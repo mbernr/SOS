@@ -3,13 +3,13 @@ import numpy as np
 from utils import *
 from deap import algorithms, base, creator, tools
 
-IND_INIT_SIZE = 5
-MAX_ITEM = 50
-MAX_WEIGHT = 50
 
 items = parse_knapsack("instances/knapsack/low-dimensional/f1_l-d_kp_10_269")
 optimal_sol = parse_knapsack_optimal_solution("instances/knapsack/low-dimensional-optimum/f1_l-d_kp_10_269")
 NBR_ITEMS = items.number_items
+IND_INIT_SIZE = 5
+MAX_ITEM = 50
+MAX_WEIGHT = items.capacity
 
 
 # To assure reproductibility, the RNG seed is set prior to the items
@@ -30,16 +30,16 @@ toolbox.register("individual", tools.initRepeat, creator.Individual,
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 def evalKnapsack(individual):
-    print(individual)
+    #print(individual)
     weight = 0.0
     value = 0.0
     for item in individual:
         weight += items.weights_items[item]
         value += items.values_items[item]
     if len(individual) > MAX_ITEM or weight > MAX_WEIGHT:
-        print("called evalKnapsack on unfeasible solution, returning: 0")
+        #print("called evalKnapsack on unfeasible solution, returning: 0")
         return 0,             # Ensure overweighted bags are dominated
-    print("called evalKnapsack, returning: ", value)
+    #print("called evalKnapsack, returning: ", value)
     return value,
 
 def cxSet(ind1, ind2):
@@ -58,10 +58,17 @@ def mutSet(individual):
         if len(individual) > 0:     # We cannot pop from an empty set
             individual.remove(rn.choice(sorted(tuple(individual))))
     else:
-        print("before: ", individual)
+        #print("before: ", individual)
         individual.add(rn.randrange(NBR_ITEMS))
-        print("after: ", individual)
+        #print("after: ", individual)
     return individual,
+
+def eval_sol(sol):
+    val = 0
+    for individual in sol:
+        for item in individual:
+            val += items.values_items[item]
+    return val
 
 toolbox.register("evaluate", evalKnapsack)
 toolbox.register("mate", cxSet)
@@ -76,7 +83,8 @@ MUTPB = 0.3 #probability next generation is produced by mutation
 
 pop = toolbox.population(n=MU)
 
-hof = tools.HallOfFame(1)
+hof = tools.ParetoFront()
+#hof = tools.HallOfFame(1)
 
 stats = tools.Statistics(lambda ind: ind.fitness.values)
 stats.register("avg", np.mean, axis=0)
@@ -89,6 +97,6 @@ stats.register("max", np.max, axis=0)
 algorithms.eaSimple(pop, toolbox, 0.7, 0.1, 1000, stats,
                     halloffame=hof)
 
-print("Solution found: ", hof)
+print("Selected items: ", hof)
+print("Solution found: ", eval_sol(hof))
 print("optimal solution was: ", optimal_sol)
-

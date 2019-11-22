@@ -2,15 +2,27 @@ import random as rn
 import numpy as np
 from utils import *
 from deap import algorithms, base, creator, tools
+import time
 
+intance_path = "instances/knapsack/large_scale/knapPI_1_100_1000_1"
+instance_opt_sol_path = "instances/knapsack/large_scale-optimum/knapPI_1_100_1000_1"
 
-items = parse_knapsack("instances/knapsack/low-dimensional/f1_l-d_kp_10_269")
-optimal_sol = parse_knapsack_optimal_solution("instances/knapsack/low-dimensional-optimum/f1_l-d_kp_10_269")
+items = parse_knapsack(intance_path)
+optimal_sol = parse_knapsack_optimal_solution(instance_opt_sol_path)
+
 NBR_ITEMS = items.number_items
 IND_INIT_SIZE = 5
 MAX_ITEM = 50
 MAX_WEIGHT = items.capacity
 
+#----------VARIABLES--------------------
+NGEN = 1000 #number of generations
+MU = 500 #numer of individuals to select for next generation
+LAMBDA = 200 #number of children to produce on each generation
+CXPB = 0.7 #probability next generation is produced by crossover
+MUTPB = 0.3 #probability next generation is produced by mutation
+tournament_size = 3
+verb = False
 
 # To assure reproductibility, the RNG seed is set prior to the items
 # dict initialization.
@@ -69,17 +81,13 @@ def eval_sol(sol):
         for item in individual:
             val += items.values_items[item]
     return val
-
 toolbox.register("evaluate", evalKnapsack)
 toolbox.register("mate", cxSet)
 toolbox.register("mutate", mutSet)
-toolbox.register("select", tools.selNSGA2)
+#toolbox.register("select", tools.selNSGA2)
+toolbox.register("select", tools.selTournament, tournsize=tournament_size)
 
-NGEN = 1000 #number of generations
-MU = 100 #numer of individuals to select for next generation
-LAMBDA = 200 #number of children to produce on each generation
-CXPB = 0.7 #probability next generation is produced by crossover
-MUTPB = 0.3 #probability next generation is produced by mutation
+
 
 pop = toolbox.population(n=MU)
 
@@ -94,9 +102,18 @@ stats.register("max", np.max, axis=0)
 
 #algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
 #                          halloffame=hof)
-algorithms.eaSimple(pop, toolbox, 0.7, 0.1, 1000, stats,
-                    halloffame=hof)
+
+start_time = time.time()
+print("running")
+algorithms.eaSimple(pop, toolbox, CXPB, MUTPB, NGEN, stats,
+                    halloffame=hof, verbose=verb)
+
+end_time = time.time()
+run_time = round(end_time - start_time, 2)
+
+
 
 print("Selected items: ", hof)
 print("Solution found: ", eval_sol(hof))
 print("optimal solution was: ", optimal_sol)
+print("Runtime: ", run_time)

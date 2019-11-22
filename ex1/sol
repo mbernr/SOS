@@ -1,0 +1,7 @@
+instances/knapsack/large_scale/knapPI_1_100_1000_1
+1000000 gen
+0.7
+0.3
+Selected items:  [Individual({35, 37, 10, 13, 48, 18, 53, 23, 60})]
+Solution found:  6748
+optimal solution was:  9147

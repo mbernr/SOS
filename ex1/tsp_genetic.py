@@ -6,8 +6,8 @@ from utils import *
 
 
 # Parsing TSP instance.
-G = parse_tsp("instances/tsp/pr76.tsp")
-optimal_tour = parse_tsp_optimal_solution("instances/tsp/pr76.opt.tour")
+G = parse_tsp("instances/tsp/ch130.tsp")
+optimal_tour = parse_tsp_optimal_solution("instances/tsp/ch130.opt.tour")
 
 # The evaluation function is the only part that needs to be provided.
 # Everything else can be handled by DEAP. 
@@ -26,6 +26,7 @@ creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)
 
 verbose = False
+random.seed(169)
 
 if not verbose:
 	print("num_generations, population_size, tournament_size, prb_crossover, prb_mutation, best_found, optimal, performance, run_time")
@@ -36,11 +37,11 @@ for population_size in [50, 100, 250, 500]:
 
 			# Parameters
 			# population_size = 500
-			num_generations = 10
+			num_generations = 1000
 			prb_crossover = prb[0]
 			prb_mutation = prb[1]
 			prb_mutation_shuffle = 0.05
-			tournament_size = 3
+			# tournament_size = 3
 
 			# Individuals are created as random permutations
 			toolbox = base.Toolbox()
@@ -55,7 +56,6 @@ for population_size in [50, 100, 250, 500]:
 			toolbox.register("evaluate", evaluate)
 
 			# Initialize population.
-			#random.seed(169)
 			population = toolbox.population(n=population_size)
 
 			# Keep the (single) best solution. 
@@ -90,7 +90,7 @@ for population_size in [50, 100, 250, 500]:
 
 			best_solution_value = evaluate(best_solution)[0]
 			optimal_solution_value = evaluate(optimal_tour)[0]
-			performance = best_solution_value / optimal_solution_value
+			performance = round(best_solution_value / optimal_solution_value, 4)
 
 			if verbose:
 				# Print the best solution we found.

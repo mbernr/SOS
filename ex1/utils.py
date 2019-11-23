@@ -4,6 +4,7 @@ import tsplib95
 import networkx as nx
 import numpy as np
 import acopy
+import time
 
 ### GENERAL GRAPH HELPERS ###
 

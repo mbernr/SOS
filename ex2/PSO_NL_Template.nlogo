@@ -79,13 +79,13 @@ to initialize-topology
      if fitness_function = "Example function"
        [set val example_function pxcor pycor]
 
-     if fitness_function = "Langermann function"
+     if fitness_function = "Langermann"
        [set val fittness_function_1 pxcor pycor]
 
-     if fitness_function  = "Schwefel function"
+     if fitness_function  = "Schwefel"
        [set val fittness_function_2 pxcor pycor]
 
-     if fitness_function = "Easom function"
+     if fitness_function = "Easom"
        [set val eason_function pxcor pycor]
   ]
 
@@ -683,7 +683,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Langermann" "Schwefel" "Easom"
-0
+3
 
 SWITCH
 10
@@ -692,7 +692,7 @@ SWITCH
 143
 Constraints
 Constraints
-1
+0
 1
 -1000
 
@@ -798,7 +798,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-0
+4
 
 PLOT
 10

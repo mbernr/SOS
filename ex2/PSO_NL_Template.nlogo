@@ -317,9 +317,12 @@ to-report fittness_function_1 [x y]
   report s;
 end
 
-; dummy random fitness function to be implemented by students
+; Schwefel function
 to-report fittness_function_2 [x y]
-  report random-normal 0 1;
+  let x1 512 /  max-x * x ; scale x to have a value from -512 to 512
+  let y1 512 /  max-y * y ; scale y to have a value from -512 to 512
+  let alpha 418.9829;
+  report (- x1 * sin((180 / pi) * sqrt(abs(x1))) ) + (- y1 * sin((180 / pi) * sqrt(abs(y1))) ) + alpha * 2;
 end
 
 ; dummy random fitness function to be implemented by students
@@ -687,7 +690,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Fitness function 1" "Fitness function 2" "Fitness function 3" "Fitness function 4" "Fitness function 5" "Fitness function 6"
-1
+2
 
 SWITCH
 10

@@ -79,24 +79,14 @@ to initialize-topology
      if fitness_function = "Example function"
        [set val example_function pxcor pycor]
 
-     if fitness_function = "Fitness function 1"
+     if fitness_function = "Langermann function"
        [set val fittness_function_1 pxcor pycor]
 
-     if fitness_function  = "Fitness function 2"
+     if fitness_function  = "Schwefel function"
        [set val fittness_function_2 pxcor pycor]
 
-     if fitness_function = "Fitness function 3"
-       [set val fittness_function_3 pxcor pycor]
-
-     if fitness_function = "Fitness function 4"
-       [set val fittness_function_4 pxcor pycor]
-
-     if fitness_function  = "Fitness function 5"
-       [set val fittness_function_5 pxcor pycor]
-
-     if fitness_function = "Fitness function 6"
-       [set val fittness_function_6 pxcor pycor]
-
+     if fitness_function = "Easom function"
+       [set val eason_function pxcor pycor]
   ]
 
   let min-val min [val] of patches
@@ -326,9 +316,7 @@ to-report fittness_function_2 [x_unscaled y_unscaled]
 end
 
 ; Easom function
-
-
-to-report fittness_function_3 [x_unscaled y_unscaled]
+to-report eason_function [x_unscaled y_unscaled]
   let x (10 /  max-x * x_unscaled) ; scale x to have a value from -10 to 10
   let y (10 /  max-y * y_unscaled) ; scale y to have a value from -10 to 10
   let bigPi 3
@@ -556,7 +544,7 @@ population-size
 population-size
 1
 100
-13.0
+14.0
 1
 1
 NIL
@@ -690,12 +678,12 @@ NIL
 CHOOSER
 10
 10
-155
+150
 55
 fitness_function
 fitness_function
-"Example function" "Fitness function 1" "Fitness function 2" "Fitness function 3" "Fitness function 4" "Fitness function 5" "Fitness function 6"
-3
+"Example function" "Langermann" "Schwefel" "Easom"
+0
 
 SWITCH
 10

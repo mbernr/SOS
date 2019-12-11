@@ -75,7 +75,7 @@ end
 to initialize-topology
   set max-x max [pxcor] of patches
   set max-y max [pycor] of patches
-  ask patches [ 
+  ask patches [
      if fitness_function = "Example function"
        [set val example_function pxcor pycor]
 
@@ -300,7 +300,21 @@ end
 
 ; dummy random fitness function to be implemented by students
 to-report fittness_function_1 [x y]
-  report random-normal 0 1;
+  let x1 (5 /  max-x * x) + 5 ; scale x to have a value from -90 to 90
+  let y1 (5 /  max-y * y) + 5 ; scale x to have a value from -180 to 180
+  let c [1 2 5 2 3];
+  let Ax [3 5 2 1 7];
+  let Ay [5 2 1 4 9];
+  let s 0;
+  let i 0;
+  while [i < 5] [
+    let c_i item i c;
+    let Ax_i item i Ax;
+    let Ay_i item i Ay;
+    set i i + 1;
+    set s s + (c_i * exp(- (1 / pi) * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) *  cos(180 * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) );
+  ]
+  report s;
 end
 
 ; dummy random fitness function to be implemented by students
@@ -467,10 +481,10 @@ end
 GRAPHICS-WINDOW
 520
 10
-982
-493
-100
-100
+980
+471
+-1
+-1
 2.25
 1
 10
@@ -534,7 +548,7 @@ population-size
 population-size
 1
 100
-13
+13.0
 1
 1
 NIL
@@ -621,7 +635,7 @@ particle-speed-limit
 particle-speed-limit
 1
 20
-13
+13.0
 1
 1
 NIL
@@ -1197,9 +1211,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 6.1.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1215,7 +1228,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

@@ -1,5 +1,7 @@
 # netlogo stuff
 ex2/NetLogo*6.1.1/
+.PSO_NL_Template.tmp.nlogo
+backup.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

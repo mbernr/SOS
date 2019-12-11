@@ -294,14 +294,14 @@ end
 ; Example function
 to-report example_function [x y] ;
   let x1 90 /  max-x * x ; scale x to have a value from -90 to 90
-  let y1 180 /  max-y * y ; scale x to have a value from -180 to 180
+  let y1 180 /  max-y * y ; scale y to have a value from -180 to 180
   report (-1 * (x1 ^ 2 + y1 ^ 2 + 25 * ( sin(x1 + 1) ^ 2 + sin(y1) ^ 2) ) + 20)
 end
 
-; dummy random fitness function to be implemented by students
+; Langermann function
 to-report fittness_function_1 [x y]
-  let x1 (5 /  max-x * x) + 5 ; scale x to have a value from -90 to 90
-  let y1 (5 /  max-y * y) + 5 ; scale x to have a value from -180 to 180
+  let x1 (5 /  max-x * x) + 5 ; scale x to have a value from 0 to 10
+  let y1 (5 /  max-y * y) + 5 ; scale y to have a value from 0 to 10
   let c [1 2 5 2 3];
   let Ax [3 5 2 1 7];
   let Ay [5 2 1 4 9];
@@ -312,7 +312,7 @@ to-report fittness_function_1 [x y]
     let Ax_i item i Ax;
     let Ay_i item i Ay;
     set i i + 1;
-    set s s + (c_i * exp(- (1 / pi) * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) *  cos(180 * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) );
+    set s s + (c_i * exp(-(1 / pi) * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) *  cos(180 * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) );
   ]
   report s;
 end

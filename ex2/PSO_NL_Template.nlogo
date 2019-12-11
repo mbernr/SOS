@@ -361,9 +361,9 @@ to-report constrain_2 [x y]
   report FALSE
 end
 
-; dummy random constrinat to be implemented by students
+; c3
 to-report constrain_3 [x y]
-  report FALSE
+  report ((x > (3 * y)) or ((3 * x) < y))
 end
 
 ; dummy random constrinat to be implemented by students
@@ -699,7 +699,7 @@ SWITCH
 143
 Constraints
 Constraints
-1
+0
 1
 -1000
 
@@ -739,7 +739,7 @@ CHOOSER
 constraint_handling_method
 constraint_handling_method
 "Rejection Method" "Penalty Method"
-0
+1
 
 INPUTBOX
 320
@@ -805,7 +805,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-0
+9
 
 PLOT
 10

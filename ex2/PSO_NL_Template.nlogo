@@ -325,9 +325,14 @@ to-report fittness_function_2 [x_unscaled y_unscaled]
   report (- x * sin((180 / pi) * sqrt(abs(x))) ) + (- y * sin((180 / pi) * sqrt(abs(y))) ) + alpha * 2;
 end
 
-; dummy random fitness function to be implemented by students
-to-report fittness_function_3 [x y]
-  report random-normal 0 1;
+; Easom function
+
+
+to-report fittness_function_3 [x_unscaled y_unscaled]
+  let x (10 /  max-x * x_unscaled) ; scale x to have a value from -10 to 10
+  let y (10 /  max-y * y_unscaled) ; scale y to have a value from -10 to 10
+  let bigPi 3
+  report cos(x) * cos(y) * exp( - ((x - bigPi)^(2) +(y - bigPi)^(2) ))
 end
 
 ; dummy random fitness function to be implemented by students
@@ -690,7 +695,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Fitness function 1" "Fitness function 2" "Fitness function 3" "Fitness function 4" "Fitness function 5" "Fitness function 6"
-2
+3
 
 SWITCH
 10

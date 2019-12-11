@@ -299,9 +299,9 @@ to-report example_function [x y] ;
 end
 
 ; Langermann function
-to-report fittness_function_1 [x y]
-  let x1 (5 /  max-x * x) + 5 ; scale x to have a value from 0 to 10
-  let y1 (5 /  max-y * y) + 5 ; scale y to have a value from 0 to 10
+to-report fittness_function_1 [x_unscaled y_unscaled]
+  let x (5 /  max-x * x_unscaled) + 5 ; scale x to have a value from 0 to 10
+  let y (5 /  max-y * y_unscaled) + 5 ; scale y to have a value from 0 to 10
   let c [1 2 5 2 3];
   let Ax [3 5 2 1 7];
   let Ay [5 2 1 4 9];
@@ -312,17 +312,17 @@ to-report fittness_function_1 [x y]
     let Ax_i item i Ax;
     let Ay_i item i Ay;
     set i i + 1;
-    set s s + (c_i * exp(-(1 / pi) * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) *  cos(180 * ((x1 - Ax_i)^(2)+(y1 - Ay_i)^(2))) );
+    set s s + (c_i * exp(-(1 / pi) * ((x - Ax_i)^(2)+(y - Ay_i)^(2))) *  cos(180 * ((x - Ax_i)^(2)+(y - Ay_i)^(2))) );
   ]
   report s;
 end
 
 ; Schwefel function
-to-report fittness_function_2 [x y]
-  let x1 512 /  max-x * x ; scale x to have a value from -512 to 512
-  let y1 512 /  max-y * y ; scale y to have a value from -512 to 512
+to-report fittness_function_2 [x_unscaled y_unscaled]
+  let x 512 /  max-x * x_unscaled ; scale x to have a value from -512 to 512
+  let y 512 /  max-y * y_unscaled ; scale y to have a value from -512 to 512
   let alpha 418.9829;
-  report (- x1 * sin((180 / pi) * sqrt(abs(x1))) ) + (- y1 * sin((180 / pi) * sqrt(abs(y1))) ) + alpha * 2;
+  report (- x * sin((180 / pi) * sqrt(abs(x))) ) + (- y * sin((180 / pi) * sqrt(abs(y))) ) + alpha * 2;
 end
 
 ; dummy random fitness function to be implemented by students

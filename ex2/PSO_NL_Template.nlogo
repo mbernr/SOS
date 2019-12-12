@@ -366,7 +366,7 @@ end
 
 ; c5
 to-report constrain_5 [x y]
-  report (x < y)
+  report (x > y)
 end
 
 ; c6

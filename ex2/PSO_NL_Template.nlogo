@@ -331,8 +331,8 @@ end
 to-report eason_function [x_unscaled y_unscaled]
   let x (10 /  max-x * x_unscaled) ; scale x to have a value from -10 to 10
   let y (10 /  max-y * y_unscaled) ; scale y to have a value from -10 to 10
-  let bigPi 3
-  report cos(x) * cos(y) * exp( - ((x - bigPi)^(2) +(y - bigPi)^(2) ))
+  let bigPi 5
+  report cos(x) * cos(y) * exp( -  ((x - bigPi)^(2) +(y - bigPi)^(2) ))
 end
 
 ; dummy random fitness function to be implemented by students
@@ -519,7 +519,7 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+S
 NIL
 NIL
 1
@@ -536,7 +536,7 @@ T
 T
 OBSERVER
 NIL
-NIL
+G
 NIL
 NIL
 0
@@ -550,7 +550,7 @@ population-size
 population-size
 1
 100
-15.0
+10.0
 1
 1
 NIL
@@ -613,7 +613,7 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+X
 NIL
 NIL
 0
@@ -689,7 +689,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Langermann" "Schwefel" "Easom"
-1
+3
 
 SWITCH
 10
@@ -698,7 +698,7 @@ SWITCH
 143
 Constraints
 Constraints
-1
+0
 1
 -1000
 
@@ -714,7 +714,7 @@ NIL
 T
 OBSERVER
 NIL
-NIL
+R
 NIL
 NIL
 1
@@ -738,7 +738,7 @@ CHOOSER
 constraint_handling_method
 constraint_handling_method
 "Rejection Method" "Penalty Method"
-1
+0
 
 INPUTBOX
 320
@@ -804,7 +804,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-8
+10
 
 PLOT
 10

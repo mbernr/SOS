@@ -193,6 +193,9 @@ to iterate
   if global-best-val = [val] of true-best-patch
     [ stop ]
 
+  if iterations = 1000
+  [stop]
+
   tick
 
 end
@@ -547,7 +550,7 @@ population-size
 population-size
 1
 100
-14.0
+15.0
 1
 1
 NIL
@@ -562,7 +565,7 @@ personal-confidence
 personal-confidence
 0
 2
-0.8
+1.0
 0.1
 1
 NIL
@@ -577,7 +580,7 @@ swarm-confidence
 swarm-confidence
 0
 2
-1.6
+1.0
 0.1
 1
 NIL
@@ -592,7 +595,7 @@ particle-inertia
 particle-inertia
 0
 1.0
-0.3
+0.5
 0.01
 1
 NIL
@@ -623,7 +626,7 @@ CHOOSER
 trails-mode
 trails-mode
 "None" "Traces"
-0
+1
 
 SLIDER
 320
@@ -634,7 +637,7 @@ particle-speed-limit
 particle-speed-limit
 1
 20
-13.0
+10.0
 1
 1
 NIL
@@ -648,7 +651,7 @@ CHOOSER
 highlight-mode
 highlight-mode
 "None" "Best found" "True best"
-1
+2
 
 MONITOR
 320
@@ -686,7 +689,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Langermann" "Schwefel" "Easom"
-2
+1
 
 SWITCH
 10
@@ -695,7 +698,7 @@ SWITCH
 143
 Constraints
 Constraints
-0
+1
 1
 -1000
 

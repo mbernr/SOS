@@ -87,6 +87,8 @@ to initialize-topology
 
      if fitness_function = "Easom"
        [set val eason_function pxcor pycor]
+
+
   ]
 
   let min-val min [val] of patches
@@ -115,6 +117,11 @@ to initialize-topology
      ask max-one-of patches [val]
   [
     set true-best-patch self
+  ]
+
+  if ( (violates x y) and (constraints = TRUE) and (constraint_handling_method = "Rejection Method") )
+  [
+     set
   ]
 
 end
@@ -344,54 +351,61 @@ to-report constrain_example [x y]
   report (x ^ 2 > y ^ 2)
 end
 
-; c1
+; dummy random constrinat to be implemented by students
 to-report constrain_1 [x y]
-  report (((x ^ 2) + (y ^ 2)) < 6000)
+  report FALSE
 end
 
-; c2
+; dummy random constrinat to be implemented by students
 to-report constrain_2 [x y]
-  report ((x > 3 * y) or (3 * x < y))
+  report FALSE
 end
 
-; c3
+; dummy random constrinat to be implemented by students
 to-report constrain_3 [x y]
-  report ((x > y + 20) or (x < y - 20))
+  report FALSE
 end
 
-; c4
+; dummy random constrinat to be implemented by students
 to-report constrain_4 [x y]
-  report (((x ^ 2) + (y ^ 2) < 9000) and ((x ^ 2) + (y ^ 2) > 4000))
+  report FALSE
 end
 
-; c5
+; dummy random constrinat to be implemented by students
 to-report constrain_5 [x y]
-  report (x > y)
+  report FALSE
 end
 
-; c6
+; dummy random constrinat to be implemented by students
 to-report constrain_6 [x y]
-  report ((10 * x) < (y ^ 2))
+  report FALSE
 end
 
-; c7
+; dummy random constrinat to be implemented by students
 to-report constrain_7 [x y]
-  report (tan(2 * x) < tan(4 * y))
+  report FALSE
 end
 
-; c8
+
 to-report constrain_8 [x y]
-  report (sin(8 * x) < sin(8 * y))
+  ifelse sin(8 * x) < sin(8 * y)
+  [report TRUE]
+  [report FALSE]
+
 end
 
-; c9
 to-report constrain_9 [x y]
-  report (sin(x) * sin(y) < 0.2)
+  ifelse sin(x) * sin(y) < 0.2
+  [report TRUE]
+  [report FALSE]
+
 end
 
-; c10
 to-report constrain_10 [x y]
-  report (tan(x * y) < 1)
+  ifelse   tan(x * y) < 1
+  [report TRUE]
+  [report FALSE]
+
 end
 
 
@@ -676,7 +690,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Langermann" "Schwefel" "Easom"
-1
+3
 
 SWITCH
 10
@@ -791,7 +805,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-10
+4
 
 PLOT
 10

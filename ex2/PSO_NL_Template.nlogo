@@ -45,13 +45,18 @@ globals
   max-y;           ; maximum y coordinate
 
   iterations       ; counter for iterations
+
+  current-run      ; counter for the current run
 ]
 
 ; The function setup initilizes the search landscape and the agents
 ; for the search. It is called by the button controll setup
 
 to setup
+
+  let tmp current-run
   clear-all
+  set current-run tmp
   set iterations 0;
   initialize-topology
 
@@ -64,6 +69,77 @@ to setup
 
   update-highlight
   reset-ticks
+
+end
+
+to launch_tests
+
+  ; launch a number of runs and print everything to a file
+
+  file-open tests-output-file
+
+  let i 0
+  let num_runs []
+  let bests-vals []
+  let num-iterations []
+  while [i < number-of-runs]
+  [
+    ; reset experiment
+    setup
+
+    set current-run (i + 1)
+
+    while [not check-stopping-conditions]
+    [iterate]
+
+    ; extract results of current run
+    set num_runs lput i num_runs
+    set bests-vals lput global-best-val bests-vals
+    set num-iterations lput iterations num-iterations
+    set i i + 1
+
+  ]
+
+  let sep-char ","
+
+  file-print "##### INPUT PARAMETERS #####"
+  let headers ["fit_fnc" "popsize" "speed" "inertia" "pc" "sc" "constraint" "const_method" "const_name"]
+  foreach headers [ x -> file-type x file-type sep-char]
+  file-print ""
+  file-type fitness_function file-type sep-char
+  file-type population-size file-type sep-char
+  file-type particle-speed-limit file-type sep-char
+  file-type particle-inertia file-type sep-char
+  file-type personal-confidence file-type sep-char
+  file-type swarm-confidence file-type sep-char
+  file-type Constraints file-type sep-char
+  file-type constraint_handling_method file-type sep-char
+  file-print Constraint
+
+  file-print "##### RUN RESULTS ##########"
+  set headers ["run_n" "num_iter" "best_val"]
+  foreach headers [ x -> file-type x file-type sep-char]
+  file-print ""
+  foreach num_runs [ x ->
+    file-type x file-type sep-char
+    file-type item x num-iterations file-type sep-char
+    file-print item x bests-vals
+  ]
+
+  file-print "##### STATS ################"
+  set headers ["stdev" "min" "max" "mean" "objective"]
+  foreach headers [ x -> file-type x file-type sep-char]
+  file-print ""
+  file-type standard-deviation bests-vals file-type sep-char
+  file-type min bests-vals file-type sep-char
+  file-type max bests-vals file-type sep-char
+  file-type mean bests-vals file-type sep-char
+  file-type [val] of true-best-patch
+  file-print ""
+  file-print ""
+
+  file-close
+
 
 end
 
@@ -94,7 +170,7 @@ to initialize-topology
   let min-val min [val] of patches
   let max-val max [val] of patches
 
-  let pen_coeff 0.5
+  let pen_coeff 2.5
 
   ask patches [
     ;normalize the values to be between 0 and 1
@@ -190,14 +266,21 @@ to iterate
 
   set iterations (iterations + 1)
 
-  if global-best-val = [val] of true-best-patch
-    [ stop ]
-
-  if iterations = 1000
-  [stop]
+  if check-stopping-conditions
+    [stop]
 
   tick
 
+end
+
+to-report check-stopping-conditions
+  if global-best-val = [val] of true-best-patch
+    [report TRUE]
+
+  if iterations = max-iterations
+    [report TRUE]
+
+  report FALSE
 end
 
 
@@ -399,7 +482,7 @@ end
 
 ; c9
 to-report constrain_9 [x y]
-  report (sin(x) * sin(y) < 0.2)
+  report (sin(x * 10) * sin(y * 10) < 0.3)
 end
 
 ; c10
@@ -550,7 +633,7 @@ population-size
 population-size
 1
 100
-25.0
+15.0
 1
 1
 NIL
@@ -626,7 +709,7 @@ CHOOSER
 trails-mode
 trails-mode
 "None" "Traces"
-1
+0
 
 SLIDER
 320
@@ -738,7 +821,7 @@ CHOOSER
 constraint_handling_method
 constraint_handling_method
 "Rejection Method" "Penalty Method"
-0
+1
 
 INPUTBOX
 320
@@ -804,7 +887,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-7
+4
 
 PLOT
 10
@@ -823,6 +906,116 @@ false
 "" ""
 PENS
 "default" 1.0 0 -5298144 true "" "plot global-best-val"
+
+SLIDER
+15
+610
+187
+643
+number-of-runs
+number-of-runs
+0
+20
+10.0
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+21
+531
+311
+587
+Automatic testing:\n
+24
+0.0
+1
+
+SLIDER
+200
+610
+372
+643
+max-iterations
+max-iterations
+0
+1000
+1000.0
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+382
+610
+505
+644
+Launch tests
+launch_tests
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+INPUTBOX
+852
+590
+983
+650
+tests-output-file
+tests.txt
+1
+0
+String
+
+TEXTBOX
+725
+594
+850
+637
+output of the tests will be appened to this file --------------→\n
+12
+0.0
+1
+
+TEXTBOX
+18
+567
+311
+599
+Run [number-of-tests] tests, compute mean, min, max std, and output to the specified file
+12
+0.0
+1
+
+MONITOR
+515
+600
+565
+645
+run #
+current-run
+17
+1
+11
+
+MONITOR
+565
+600
+621
+645
+of
+number-of-runs
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

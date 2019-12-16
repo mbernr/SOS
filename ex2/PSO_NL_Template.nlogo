@@ -94,6 +94,8 @@ to initialize-topology
   let min-val min [val] of patches
   let max-val max [val] of patches
 
+  let pen_coeff 0.8
+
   ask patches [
     ;normalize the values to be between 0 and 1
     set val (val - min-val) / (max-val - min-val)
@@ -101,28 +103,28 @@ to initialize-topology
     ;check whether the patch violates a constrain
     ;if yes set its value to zero and color to red
     ;otherwise, set the patch color according to its value
-    ifelse  ((violates pxcor  pycor) and (constraints = TRUE))
-     [
-         set val 0
-         set pcolor 15
-     ]
-
-     [
-         set pcolor scale-color gray val 0.0  1
-
-     ]
-
+    ifelse  ((violates pxcor  pycor) and (constraints = TRUE) )
+    [
+      set pcolor 15
+      ifelse (constraint_handling_method = "Rejection Method")
+      [
+        set val 0
+      ]
+      [
+        set val min(list 0 (val - pen_coeff))
+      ]
     ]
+    [
+      set pcolor scale-color gray val 0.0  1
+    ]
+  ]
 
-     ask max-one-of patches [val]
+  ask max-one-of patches [val]
   [
     set true-best-patch self
   ]
 
-  if ( (violates x y) and (constraints = TRUE) and (constraint_handling_method = "Rejection Method") )
-  [
-     set
-  ]
+
 
 end
 
@@ -346,66 +348,60 @@ to-report fittness_function_6 [x y]
 end
 
 
+
 ; constraint example
 to-report constrain_example [x y]
   report (x ^ 2 > y ^ 2)
 end
 
-; dummy random constrinat to be implemented by students
+; c1
 to-report constrain_1 [x y]
-  report FALSE
+  report (((x ^ 2) + (y ^ 2)) < 6000)
 end
 
-; dummy random constrinat to be implemented by students
+; c2
 to-report constrain_2 [x y]
-  report FALSE
+  report ((x > 3 * y) or (3 * x < y))
 end
 
-; dummy random constrinat to be implemented by students
+; c3
 to-report constrain_3 [x y]
-  report FALSE
+  report ((x > y + 20) or (x < y - 20))
 end
 
-; dummy random constrinat to be implemented by students
+; c4
 to-report constrain_4 [x y]
-  report FALSE
+  report (((x ^ 2) + (y ^ 2) < 9000) and ((x ^ 2) + (y ^ 2) > 4000))
 end
 
-; dummy random constrinat to be implemented by students
+; c5
 to-report constrain_5 [x y]
-  report FALSE
+  report (x > y)
 end
 
-; dummy random constrinat to be implemented by students
+; c6
 to-report constrain_6 [x y]
-  report FALSE
+  report ((10 * x) < (y ^ 2))
 end
 
-; dummy random constrinat to be implemented by students
+; c7
 to-report constrain_7 [x y]
-  report FALSE
+  report (tan(2 * x) < tan(4 * y))
 end
 
-
+; c8
 to-report constrain_8 [x y]
-  ifelse sin(8 * x) < sin(8 * y)
-  [report TRUE]
-  [report FALSE]
-
+  report (sin(8 * x) < sin(8 * y))
 end
 
+; c9
 to-report constrain_9 [x y]
-  ifelse sin(x) * sin(y) < 0.2
-  [report TRUE]
-  [report FALSE]
-
+  report (sin(x) * sin(y) < 0.2)
 end
 
+; c10
 to-report constrain_10 [x y]
-  ifelse   tan(x * y) < 1
-  [report TRUE]
-  [report FALSE]
-
+  report (tan(x * y) < 1)
 end
 
 
@@ -690,7 +686,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Langermann" "Schwefel" "Easom"
-3
+2
 
 SWITCH
 10
@@ -739,7 +735,7 @@ CHOOSER
 constraint_handling_method
 constraint_handling_method
 "Rejection Method" "Penalty Method"
-0
+1
 
 INPUTBOX
 320
@@ -805,7 +801,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-4
+8
 
 PLOT
 10

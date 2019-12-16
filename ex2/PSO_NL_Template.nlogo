@@ -94,7 +94,7 @@ to initialize-topology
   let min-val min [val] of patches
   let max-val max [val] of patches
 
-  let pen_coeff 0.8
+  let pen_coeff 0.5
 
   ask patches [
     ;normalize the values to be between 0 and 1
@@ -111,7 +111,7 @@ to initialize-topology
         set val 0
       ]
       [
-        set val min(list 0 (val - pen_coeff))
+        set val max(list 0 (val - pen_coeff))
       ]
     ]
     [
@@ -550,7 +550,7 @@ population-size
 population-size
 1
 100
-10.0
+25.0
 1
 1
 NIL
@@ -804,7 +804,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-10
+7
 
 PLOT
 10

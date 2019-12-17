@@ -1,3 +1,4 @@
+extensions [csv]
 ; Institue of Software Technology
 ; TU Wien
 ;
@@ -82,6 +83,7 @@ to launch_tests
   let num_runs []
   let bests-vals []
   let num-iterations []
+  let optimum-found 0
   while [i < number-of-runs]
   [
     ; reset experiment
@@ -98,14 +100,16 @@ to launch_tests
     set num-iterations lput iterations num-iterations
     set i i + 1
 
+    if global-best-val = [val] of true-best-patch
+    [set optimum-found optimum-found + 1]
   ]
 
   let sep-char ","
 
   file-print "##### INPUT PARAMETERS #####"
   let headers ["fit_fnc" "popsize" "speed" "inertia" "pc" "sc" "constraint" "const_method" "const_name"]
-  foreach headers [ x -> file-type x file-type sep-char]
-  file-print ""
+  let str csv:to-row headers
+  file-print str
   file-type fitness_function file-type sep-char
   file-type population-size file-type sep-char
   file-type particle-speed-limit file-type sep-char
@@ -118,8 +122,8 @@ to launch_tests
 
   file-print "##### RUN RESULTS ##########"
   set headers ["run_n" "num_iter" "best_val"]
-  foreach headers [ x -> file-type x file-type sep-char]
-  file-print ""
+  set str csv:to-row headers
+  file-print str
   foreach num_runs [ x ->
     file-type x file-type sep-char
     file-type item x num-iterations file-type sep-char
@@ -127,14 +131,15 @@ to launch_tests
   ]
 
   file-print "##### STATS ################"
-  set headers ["stdev" "min" "max" "mean" "objective"]
-  foreach headers [ x -> file-type x file-type sep-char]
-  file-print ""
+  set headers ["stdev" "min" "max" "mean" "objective" "opti_found_per"]
+  set str csv:to-row headers
+  file-print str
   file-type standard-deviation bests-vals file-type sep-char
   file-type min bests-vals file-type sep-char
   file-type max bests-vals file-type sep-char
   file-type mean bests-vals file-type sep-char
-  file-type [val] of true-best-patch
+  file-type [val] of true-best-patch file-type sep-char
+  file-type (optimum-found / number-of-runs)
   file-print ""
   file-print ""
 
@@ -916,7 +921,7 @@ number-of-runs
 number-of-runs
 0
 20
-10.0
+20.0
 1
 1
 NIL

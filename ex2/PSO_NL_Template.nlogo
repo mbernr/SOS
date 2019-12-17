@@ -131,7 +131,7 @@ to launch_tests
   ]
 
   file-print "##### STATS ################"
-  set headers ["stdev" "min" "max" "mean" "objective" "opti_found_per"]
+  set headers ["stdev" "min" "max" "mean" "objective" "opti_found_per" "mean_iter"]
   set str csv:to-row headers
   file-print str
   file-type standard-deviation bests-vals file-type sep-char
@@ -139,7 +139,8 @@ to launch_tests
   file-type max bests-vals file-type sep-char
   file-type mean bests-vals file-type sep-char
   file-type [val] of true-best-patch file-type sep-char
-  file-type (optimum-found / number-of-runs)
+  file-type (optimum-found / number-of-runs) file-type sep-char
+  file-type mean num-iterations
   file-print ""
   file-print ""
 
@@ -571,11 +572,11 @@ end
 GRAPHICS-WINDOW
 520
 10
-980
-471
+1030
+521
 -1
 -1
-2.25
+2.5
 1
 10
 1
@@ -826,7 +827,7 @@ CHOOSER
 constraint_handling_method
 constraint_handling_method
 "Rejection Method" "Penalty Method"
-1
+0
 
 INPUTBOX
 320
@@ -892,7 +893,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-4
+1
 
 PLOT
 10
@@ -913,35 +914,35 @@ PENS
 "default" 1.0 0 -5298144 true "" "plot global-best-val"
 
 SLIDER
-15
-610
-187
-643
+10
+605
+182
+638
 number-of-runs
 number-of-runs
 0
-20
-20.0
+50
+50.0
 1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-21
-531
-311
-587
+25
+520
+315
+576
 Automatic testing:\n
 24
 0.0
 1
 
 SLIDER
-200
-610
-372
-643
+195
+605
+367
+638
 max-iterations
 max-iterations
 0
@@ -953,10 +954,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-382
-610
-505
-644
+377
+605
+500
+639
 Launch tests
 launch_tests
 NIL
@@ -970,41 +971,41 @@ NIL
 1
 
 INPUTBOX
-852
-590
-983
-650
+847
+585
+978
+645
 tests-output-file
-tests.txt
+tests.csv
 1
 0
 String
 
 TEXTBOX
-725
-594
-850
-637
+720
+589
+845
+632
 output of the tests will be appened to this file --------------→\n
 12
 0.0
 1
 
 TEXTBOX
-18
-567
-311
-599
+22
+556
+315
+588
 Run [number-of-tests] tests, compute mean, min, max std, and output to the specified file
 12
 0.0
 1
 
 MONITOR
-515
-600
-565
-645
+510
+595
+560
+640
 run #
 current-run
 17
@@ -1012,10 +1013,10 @@ current-run
 11
 
 MONITOR
-565
-600
-621
-645
+560
+595
+616
+640
 of
 number-of-runs
 17

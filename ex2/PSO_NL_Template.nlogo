@@ -84,6 +84,9 @@ to launch_tests
   let bests-vals []
   let num-iterations []
   let optimum-found 0
+  let turtles_means []
+
+
   while [i < number-of-runs]
   [
     ; reset experiment
@@ -96,6 +99,9 @@ to launch_tests
 
     ; extract results of current run
     set num_runs lput i num_runs
+
+    set turtles_means lput ((sum [personal-best-val] of turtles) / (count turtles)) turtles_means
+
     set bests-vals lput global-best-val bests-vals
     set num-iterations lput iterations num-iterations
     set i i + 1
@@ -121,13 +127,14 @@ to launch_tests
   file-print Constraint
 
   file-print "##### RUN RESULTS ##########"
-  set headers ["run_n" "num_iter" "best_val"]
+  set headers ["run_n" "num_iter" "best_val" "turtles_mean"]
   set str csv:to-row headers
   file-print str
   foreach num_runs [ x ->
     file-type x file-type sep-char
     file-type item x num-iterations file-type sep-char
-    file-print item x bests-vals
+    file-type item x bests-vals file-type sep-char
+    file-print item x turtles_means
   ]
 
   file-print "##### STATS ################"
@@ -280,9 +287,6 @@ to iterate
 end
 
 to-report check-stopping-conditions
-  if global-best-val = [val] of true-best-patch
-    [report TRUE]
-
   if iterations = max-iterations
     [report TRUE]
 
@@ -639,7 +643,7 @@ population-size
 population-size
 1
 100
-15.0
+20.0
 1
 1
 NIL
@@ -654,7 +658,7 @@ personal-confidence
 personal-confidence
 0
 2
-1.0
+0.5
 0.1
 1
 NIL
@@ -669,7 +673,7 @@ swarm-confidence
 swarm-confidence
 0
 2
-1.0
+1.5
 0.1
 1
 NIL
@@ -684,7 +688,7 @@ particle-inertia
 particle-inertia
 0
 1.0
-0.5
+0.9
 0.01
 1
 NIL
@@ -726,7 +730,7 @@ particle-speed-limit
 particle-speed-limit
 1
 20
-10.0
+7.0
 1
 1
 NIL
@@ -778,7 +782,7 @@ CHOOSER
 fitness_function
 fitness_function
 "Example function" "Langermann" "Schwefel" "Easom"
-3
+2
 
 SWITCH
 10
@@ -827,7 +831,7 @@ CHOOSER
 constraint_handling_method
 constraint_handling_method
 "Rejection Method" "Penalty Method"
-0
+1
 
 INPUTBOX
 320
@@ -893,7 +897,7 @@ CHOOSER
 Constraint
 Constraint
 "Example" "Constraint 1" "Constraint 2" "Constraint 3" "Constraint 4" "Constraint 5" "Constraint 6" "Constraint 7" "Constraint 8" "Constraint 9" "Constraint 10"
-1
+10
 
 PLOT
 10
@@ -922,7 +926,7 @@ number-of-runs
 number-of-runs
 0
 50
-50.0
+20.0
 1
 1
 NIL
@@ -976,7 +980,7 @@ INPUTBOX
 978
 645
 tests-output-file
-tests.csv
+hyp4.csv
 1
 0
 String

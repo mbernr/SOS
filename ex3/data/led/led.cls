@@ -1,7 +1,7 @@
 $TYPE class_information 
 $NUM_CLASSES 10 
 $CLASS_NAMES 0 1 2 3 4 5 6 7 8 9 
-$XDIM 2 
+$XDIM 2
 $YDIM 3200 
 vec1 8 
 vec2 1 

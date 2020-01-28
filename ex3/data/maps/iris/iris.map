@@ -5,7 +5,7 @@ $XDIM 10
 $YDIM 10
 $ZDIM 1
 $VEC_DIM 4
-$STORAGE_DATE 1/28/20, 9:46 AM
+$STORAGE_DATE 1/28/20, 2:57 PM
 $TRAINING_TIME 
 $LEARNRATE_TYPE exponential
 $LEARNRATE_INIT 0.7
@@ -18,15 +18,15 @@ $ADAPTIVE_COORDINATES_THRESHOLD
 $VEC_NORMALIZED true
 $QUANTERROR_MAP <error receiving value: Quality measure with name mqe not found.>
 $QUANTERROR_VEC <error receiving value: Quality measure with name mqe not found.>
-$URL_TRAINING_VEC /home/mbernr/Documents/SOS/ex3/somtoolbox/../data/example/iris.vec
+$URL_TRAINING_VEC /home/mbernr/Documents/SOS/ex3/data/iris/iris.vec
 $URL_TRAINING_VEC_DESCR 
-$URL_WEIGHT_VEC /home/mbernr/Documents/SOS/ex3/somtoolbox/../data/example/../maps/iris/iris.wgt
+$URL_WEIGHT_VEC /home/mbernr/Documents/SOS/ex3/data/iris/../maps/iris/iris.wgt
 $URL_QUANTERR_MAP 
 $URL_MAPPED_INPUT_VEC 
 $URL_MAPPED_INPUT_VEC_DESCR 
-$URL_UNIT_DESCR /home/mbernr/Documents/SOS/ex3/somtoolbox/../data/example/../maps/iris/iris.unit
-$URL_TEMPLATE_VECTOR /home/mbernr/Documents/SOS/ex3/somtoolbox/../data/example/iris.tv
-$URL_DATA_WINNER_MAPPING /home/mbernr/Documents/SOS/ex3/somtoolbox/../data/example/../maps/iris/iris.dwm
+$URL_UNIT_DESCR /home/mbernr/Documents/SOS/ex3/data/iris/../maps/iris/iris.unit
+$URL_TEMPLATE_VECTOR /home/mbernr/Documents/SOS/ex3/data/iris/iris.tv
+$URL_DATA_WINNER_MAPPING /home/mbernr/Documents/SOS/ex3/data/iris/../maps/iris/iris.dwm
 $URL_CLASS_INFO 
 $URL_LABELS 
 $METRIC at.tuwien.ifs.somtoolbox.layers.metrics.L2Metric

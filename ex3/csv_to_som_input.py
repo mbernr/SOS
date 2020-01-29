@@ -8,6 +8,17 @@ column_names = []
 data = []
 target = []
 
+cheat = {
+    'cCSm': 0,
+    'cCSs': 1,
+    'cSCm': 2,
+    'cSCs': 3,
+    'tCSm': 4,
+    'tCSs': 5,
+    'tSCm': 6,
+    'tSCs': 7,
+}
+
 
 # read CSV
 
@@ -82,7 +93,7 @@ with open("data/"+dataset+"/"+dataset+".cls", 'w') as file:
     file.write("$XDIM 2 \n")
     file.write("$YDIM {} \n".format(len(target)))
     for i in range(len(data)):
-        file.write("vec{} {} \n".format(i+1, target[i]))
+        file.write("vec{} {} \n".format(i+1, cheat[target[i]]))
 
 
 #write .tv file
@@ -113,9 +124,9 @@ randomSeed=42
 xSize={1}
 ySize={1}
 learnRate=0.75
-sigma=5
+sigma=1
 #tau=
 #metricName=
 numIterations={2}
 
-""".format(dataset, round(sqrt(len(data)/10)), len(data)*5))
+""".format(dataset, round(sqrt(len(data)/10))+5, len(data)*5))

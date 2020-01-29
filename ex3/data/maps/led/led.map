@@ -4,18 +4,18 @@ $GRID_LAYOUT rectangular
 $XDIM 18
 $YDIM 18
 $ZDIM 1
-$VEC_DIM 24
-$STORAGE_DATE 1/28/20, 3:50 PM
+$VEC_DIM 10
+$STORAGE_DATE 1/29/20, 11:00 AM
 $TRAINING_TIME 
 $LEARNRATE_TYPE exponential
 $LEARNRATE_INIT 0.75
 $NEIGHBORHOOD_TYPE exponential
-$NEIGHBORHOOD_INIT 9.0
+$NEIGHBORHOOD_INIT 5.0
 $RAND_INIT 42
 $ITERATIONS_TOTAL 16000
 $NR_TRAINVEC_TOTAL 3200
 $ADAPTIVE_COORDINATES_THRESHOLD 
-$VEC_NORMALIZED false
+$VEC_NORMALIZED true
 $QUANTERROR_MAP <error receiving value: Quality measure with name mqe not found.>
 $QUANTERROR_VEC <error receiving value: Quality measure with name mqe not found.>
 $URL_TRAINING_VEC /home/mbernr/Documents/SOS/ex3/data/led/led.vec

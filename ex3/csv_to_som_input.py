@@ -1,7 +1,8 @@
 import csv
+import numpy as np
 
 
-dataset = "led"
+dataset = "mice"
 column_names = []
 data = []
 target = []
@@ -14,12 +15,50 @@ with open("data/"+dataset+"/"+dataset+".csv") as file:
     line_count = 0
     for row in csv_reader:
         if line_count == 0:
-            column_names = row[:-1]
+            column_names = row[1:-4]
             line_count += 1
         else:
-            data.append(row[:-1])
+            data.append(row[1:-4])
             target.append(row[-1])
             line_count += 1
+
+
+
+# replace missing values
+
+def mean_of_column(data, column):
+    s = 0
+    n = 0
+    for i in range(len(data)):
+        if data[i][column] != '?':
+            s += float(data[i][column])
+            n += 1
+    return s / n
+
+def std_of_column(data, column):
+    temp = [float(data[i][column]) for i in range(len(data))]
+    c = np.array(temp, dtype=float)
+    return np.std(c)
+
+column_means = [mean_of_column(data, i) for i in range(len(data[0]))]
+
+
+# scale
+
+for i in range(len(data)):
+    for column in range(len(data[i])):
+        if data[i][column] == '?':
+            data[i][column] = column_means[column]
+        else:
+            data[i][column] = float(data[i][column])
+
+column_means = [mean_of_column(data, i) for i in range(len(data[0]))]
+column_stds = [std_of_column(data, i) for i in range(len(data[0]))]
+
+for i in range(len(data)):
+    for column in range(len(data[i])):
+        data[i][column] = (data[i][column] - column_means[column]) / column_stds[column]
+        data[i][column] = str(data[i][column])
 
 
 # write .vec file
@@ -51,30 +90,29 @@ with open("data/"+dataset+"/"+dataset+".tv", 'w') as file:
     file.write("$XDIM 2 \n")
     file.write("$YDIM {} \n".format(len(data)))
     file.write("$VEC_DIM {} \n".format(len(data[0])))
-    for i in range(len(column_names)):
+    for i in range(len(data[0])):
         file.write("{} {} \n".format(i, column_names[i]))
 
 # write .prop file
 
 with open("data/"+dataset+"/"+dataset+".prop", 'w') as file:
     file.write("""outputDirectory=../maps/{0} 
-namePrefix={0} 
-vectorFileName={0}.vec 
-templateFileName={0}.tv 
-isNormalized=false 
-randomSeed=7 
-workingDirectory = ./   
+workingDirectory=./
+outputDirectory=../maps/{0}
+namePrefix={0}
+vectorFileName={0}.vec
+sparseData=yes
+isNormalized=yes
+templateFileName={0}.tv
+#cacheSize=
 
-useDatabase=false 
-databaseServerAddress= 
-databaseName=vectors 
-databaseUser= 
-databasePassword= 
-databaseTableNamePrefix={0}
+randomSeed=42
+xSize=18
+ySize=18
+learnRate=0.75
+sigma=5
+#tau=
+#metricName=
+numIterations=16000
 
-xSize=10 
-ySize=10 
-learnRate=0.7 
-#metricName= 
-numIterations=10000 
 """.format(dataset))

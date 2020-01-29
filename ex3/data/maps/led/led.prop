@@ -1,0 +1,19 @@
+#led prop file
+# somtoolbox [GrowingSOM, --numberWinners, 300, --cpus, 4, 
+#   /home/mbernr/Documents/SOS/ex3/data/maps/led/led.prop]
+#
+#Tue Jan 28 16:30:49 CET 2020
+sigma=1.0
+workingDirectory=/home/mbernr/Documents/SOS/ex3/data/maps/led
+tau=1.0
+templateFileName=/home/mbernr/Documents/SOS/ex3/data/led/led.tv
+ySize=25
+learnRate=0.7
+randomSeed=7
+numIterations=16000
+namePrefix=led
+vectorFileName=/home/mbernr/Documents/SOS/ex3/data/led/led.vec
+sparseData=yes
+outputDirectory=/home/mbernr/Documents/SOS/ex3/data/maps/led
+xSize=25
+isNormalized=yes

@@ -1,8 +1,9 @@
+outputDirectory=../maps/led 
 workingDirectory=./
 outputDirectory=../maps/led
 namePrefix=led
 vectorFileName=led.vec
-sparseData=no
+sparseData=yes
 isNormalized=yes
 templateFileName=led.tv
 #cacheSize=
@@ -11,7 +12,8 @@ randomSeed=42
 xSize=18
 ySize=18
 learnRate=0.75
-#sigma=12
+sigma=5
 #tau=
 #metricName=
 numIterations=16000
+

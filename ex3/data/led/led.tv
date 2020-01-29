@@ -1,7 +1,7 @@
 $TYPE template 
 $XDIM 2 
 $YDIM 3200 
-$VEC_DIM 24 
+$VEC_DIM 10 
 0 attribute#1 
 1 attribute#2 
 2 attribute#3 
@@ -12,17 +12,3 @@ $VEC_DIM 24
 7 irrelevant1 
 8 irrelevant2 
 9 irrelevant3 
-10 irrelevant4 
-11 irrelevant5 
-12 irrelevant6 
-13 irrelevant7 
-14 irrelevant8 
-15 irrelevant9 
-16 irrelevant10 
-17 irrelevant11 
-18 irrelevant12 
-19 irrelevant13 
-20 irrelevant14 
-21 irrelevant15 
-22 irrelevant16 
-23 irrelevant17 

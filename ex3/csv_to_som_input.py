@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from math import sqrt
 
 
 dataset = "mice"
@@ -19,7 +20,7 @@ with open("data/"+dataset+"/"+dataset+".csv") as file:
             line_count += 1
         else:
             data.append(row[1:-4])
-            target.append(row[-1])
+            target.append(row[-1].replace("'", "").replace("-",""))
             line_count += 1
 
 
@@ -85,6 +86,7 @@ with open("data/"+dataset+"/"+dataset+".cls", 'w') as file:
 
 
 #write .tv file
+
 with open("data/"+dataset+"/"+dataset+".tv", 'w') as file:
     file.write("$TYPE template \n")
     file.write("$XDIM 2 \n")
@@ -92,6 +94,7 @@ with open("data/"+dataset+"/"+dataset+".tv", 'w') as file:
     file.write("$VEC_DIM {} \n".format(len(data[0])))
     for i in range(len(data[0])):
         file.write("{} {} \n".format(i, column_names[i]))
+
 
 # write .prop file
 
@@ -107,12 +110,12 @@ templateFileName={0}.tv
 #cacheSize=
 
 randomSeed=42
-xSize=18
-ySize=18
+xSize={1}
+ySize={1}
 learnRate=0.75
 sigma=5
 #tau=
 #metricName=
-numIterations=16000
+numIterations={2}
 
-""".format(dataset))
+""".format(dataset, round(sqrt(len(data)/10)), len(data)*5))

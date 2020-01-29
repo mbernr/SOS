@@ -9,11 +9,11 @@ templateFileName=mice.tv
 #cacheSize=
 
 randomSeed=42
-xSize=18
-ySize=18
+xSize=15
+ySize=15
 learnRate=0.75
-sigma=5
+sigma=1
 #tau=
 #metricName=
-numIterations=16000
+numIterations=5400
 

@@ -1,6 +1,7 @@
 import csv
 import numpy as np
 from math import sqrt
+import random
 
 
 dataset = "mice"
@@ -54,9 +55,6 @@ def std_of_column(data, column):
 
 column_means = [mean_of_column(data, i) for i in range(len(data[0]))]
 
-
-# scale
-
 for i in range(len(data)):
     for column in range(len(data[i])):
         if data[i][column] == '?':
@@ -64,12 +62,17 @@ for i in range(len(data)):
         else:
             data[i][column] = float(data[i][column])
 
+
+# scale
+
 column_means = [mean_of_column(data, i) for i in range(len(data[0]))]
 column_stds = [std_of_column(data, i) for i in range(len(data[0]))]
+column_rnd = [random.randint(1,101) for i in range(len(data[0]))]
 
 for i in range(len(data)):
     for column in range(len(data[i])):
         data[i][column] = (data[i][column] - column_means[column]) / column_stds[column]
+        # data[i][column] *= column_rnd[column]
         data[i][column] = str(data[i][column])
 
 

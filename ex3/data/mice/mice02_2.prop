@@ -1,0 +1,17 @@
+workingDirectory=./
+outputDirectory=../maps/mice02_2
+namePrefix=mice
+vectorFileName=mice.vec
+sparseData=yes
+isNormalized=yes
+templateFileName=mice.tv
+#cacheSize=
+
+randomSeed=398
+xSize=15
+ySize=15
+learnRate=0.75
+sigma=1
+#tau=
+#metricName=
+numIterations=5400

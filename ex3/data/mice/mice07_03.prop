@@ -1,6 +1,5 @@
-outputDirectory=../maps/mice 
 workingDirectory=./
-outputDirectory=../maps/mice
+outputDirectory=../maps/mice07_03
 namePrefix=mice
 vectorFileName=mice.vec
 sparseData=yes
@@ -15,5 +14,5 @@ learnRate=0.75
 sigma=1
 #tau=
 #metricName=
-numIterations=5400
+numIterations=10
 

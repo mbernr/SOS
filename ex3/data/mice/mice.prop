@@ -1,6 +1,5 @@
-outputDirectory=../maps/mice 
 workingDirectory=./
-outputDirectory=../maps/mice
+outputDirectory=../maps/mice3
 namePrefix=mice
 vectorFileName=mice.vec
 sparseData=yes
@@ -9,11 +8,11 @@ templateFileName=mice.tv
 #cacheSize=
 
 randomSeed=42
-xSize=15
-ySize=15
-learnRate=0.75
+xSize=30
+ySize=30
+learnRate=0.1
 sigma=1
 #tau=
 #metricName=
-numIterations=5400
+numIterations=1000000
 

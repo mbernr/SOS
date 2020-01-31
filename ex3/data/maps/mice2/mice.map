@@ -1,11 +1,11 @@
 $TYPE som
 $GRID_TOPOLOGY planar
 $GRID_LAYOUT rectangular
-$XDIM 15
-$YDIM 15
+$XDIM 8
+$YDIM 8
 $ZDIM 1
 $VEC_DIM 77
-$STORAGE_DATE 1/31/20, 10:15 AM
+$STORAGE_DATE 1/30/20, 3:31 PM
 $TRAINING_TIME 
 $LEARNRATE_TYPE exponential
 $LEARNRATE_INIT 1.0
@@ -20,13 +20,13 @@ $QUANTERROR_MAP <error receiving value: Quality measure with name mqe not found.
 $QUANTERROR_VEC <error receiving value: Quality measure with name mqe not found.>
 $URL_TRAINING_VEC /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/mice.vec
 $URL_TRAINING_VEC_DESCR 
-$URL_WEIGHT_VEC /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/../maps/mice/mice.wgt
+$URL_WEIGHT_VEC /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/../maps/mice2/mice.wgt
 $URL_QUANTERR_MAP 
 $URL_MAPPED_INPUT_VEC 
 $URL_MAPPED_INPUT_VEC_DESCR 
-$URL_UNIT_DESCR /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/../maps/mice/mice.unit
+$URL_UNIT_DESCR /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/../maps/mice2/mice.unit
 $URL_TEMPLATE_VECTOR /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/mice.tv
-$URL_DATA_WINNER_MAPPING /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/../maps/mice/mice.dwm
+$URL_DATA_WINNER_MAPPING /media/tim/Data/Travail/INSA/6eme_annee_WIEN/1-Semester/SOS/exercise/SOS/ex3/data/mice/../maps/mice2/mice.dwm
 $URL_CLASS_INFO 
 $URL_LABELS 
 $METRIC at.tuwien.ifs.somtoolbox.layers.metrics.L2Metric
